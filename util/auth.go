@@ -1,10 +1,9 @@
 package util
 
 import (
-	"os"
-	"strconv"
 	"time"
 
+	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/config"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -25,26 +24,22 @@ func NewAuth(cfg *AuthConfig) Auth {
 
 type IdTokenClaims struct {
 	jwt.RegisteredClaims
-	UserId int `json:"user_id"`
+	UserId  int  `json:"user_id"`
 	IsAdmin bool `json:"is_admin"`
 }
 
-var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
-var JWT_TTL, _ = strconv.Atoi(os.Getenv("JWT_TTL"))
-var ISSUER = os.Getenv("JWT_ISSUER")
-
 func (a *authImpl) GenerateToken(userId int, isAdmin bool) (string, error) {
 	expireTime := time.Now().Add(1 * time.Hour)
-	
+
 	claims := &IdTokenClaims{}
 	claims.UserId = userId
 	claims.IsAdmin = isAdmin
 	claims.IssuedAt = &jwt.NumericDate{Time: time.Now()}
 	claims.ExpiresAt = jwt.NewNumericDate(expireTime)
-	claims.Issuer = ISSUER
+	claims.Issuer = config.Issuer
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(SECRET_KEY)
+	tokenString, err := token.SignedString(config.SecretKey)
 	if err != nil {
 		return "", err
 	}
@@ -64,4 +59,3 @@ func (a *authImpl) HashPassword(pwd string) (string, error) {
 	}
 	return string(hash), nil
 }
-

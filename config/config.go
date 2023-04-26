@@ -38,4 +38,6 @@ var (
 		DBName:   getENV("DB_NAME", "online_learning_db"),
 		Port:     getENV("DB_PORT", "5432"),
 	}
+	SecretKey = []byte(getENV("JWT_SECRET_KEY", ""))
+	Issuer = getENV("JWT_ISSUER", "")
 )
