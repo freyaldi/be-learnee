@@ -1,6 +1,11 @@
 package config
 
-import "os"
+import (
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+)
 
 type dbConfig struct {
 	Host string
@@ -11,6 +16,11 @@ type dbConfig struct {
 }
 
 func getENV(key, defaultVal string) string {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err)
+		return ""
+	}
 	env := os.Getenv(key)
 	if env == "" {
 		return defaultVal
