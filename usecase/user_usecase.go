@@ -10,19 +10,23 @@ import (
 
 type UserUsecase interface {
 	Register(*dto.UserRegisterRequest) error
+	Login(*dto.UserLoginRequest) (string, error)
 }
 
 type userUsecaseImpl struct {
 	userRepository repository.UserRepository
+	jwt            util.Auth
 }
 
 type UserUConfig struct {
 	UserRepository repository.UserRepository
+	JWT            util.Auth
 }
 
 func NewUserUsecase(c *UserUConfig) UserUsecase {
 	return &userUsecaseImpl{
 		userRepository: c.UserRepository,
+		jwt: c.JWT,
 	}
 }
 
@@ -38,16 +42,21 @@ func (u *userUsecaseImpl) Register(request *dto.UserRegisterRequest) error {
 
 	referral := util.GenerateReferral()
 
+	hashedPassword, err := u.jwt.HashPassword(request.Password)
+	if err != nil {
+		return err
+	}
+
 	newUser := &entity.User{
-		Email: request.Email,
-		Password: request.Password,
-		Fullname: request.Fullname,
-		Address: request.Address,
+		Email:       request.Email,
+		Password:    hashedPassword,
+		Fullname:    request.Fullname,
+		Address:     request.Address,
 		PhoneNumber: request.PhoneNumber,
 		RefReferral: &request.RefReferral,
-		Referral: referral,
-		IsAdmin: false,
-		Level: entity.Newbie,
+		Referral:    referral,
+		IsAdmin:     false,
+		Level:       entity.Newbie,
 	}
 
 	err = u.userRepository.Create(newUser)
@@ -56,4 +65,23 @@ func (u *userUsecaseImpl) Register(request *dto.UserRegisterRequest) error {
 	}
 
 	return nil
+}
+
+func (u *userUsecaseImpl) Login(request *dto.UserLoginRequest) (string, error) {
+	user, err := u.userRepository.FindByEmail(request.Email)
+	if err != nil {
+		return "", er.ErrIncorrectCredentials
+	}
+
+	isPasswordCorrect := u.jwt.ComparePassword(user.Password, request.Password)
+	if !isPasswordCorrect {
+		return "", er.ErrIncorrectCredentials
+	}
+
+	token, err := u.jwt.GenerateToken(user.Id, user.IsAdmin)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }

@@ -18,6 +18,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 	})
 
 	router.POST("/register", h.Register)
+	router.POST("/login", h.Login)
 
 	return router
 }
