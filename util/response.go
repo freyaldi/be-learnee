@@ -1,5 +1,7 @@
 package util
 
+import "net/http"
+
 type response struct {
 	StatusCode int         `json:"status_code"`
 	Message    string      `json:"message"`
@@ -18,6 +20,14 @@ func ErrorResponse(message string, statusCode int) response {
 	return response{
 		StatusCode: statusCode,
 		Message:    message,
+		Data:       nil,
+	}
+}
+
+func UnauthorizedError() response {
+	return response{
+		StatusCode: http.StatusUnauthorized,
+		Message:    "Unauthorized",
 		Data:       nil,
 	}
 }
