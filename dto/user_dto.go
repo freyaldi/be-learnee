@@ -13,3 +13,12 @@ type UserLoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
+
+type UserDetailResponse struct {
+	Fullname    string `json:"fullname"`
+	Address     string `json:"address"`
+	PhoneNumber string `json:"phone_number"`
+	IsAdmin     bool   `json:"is_admin"`
+	Level       string `json:"level"`
+	Referral    string `json:"referral"`
+}
