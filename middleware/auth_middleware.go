@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/config"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/usecase"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/util"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ const schema = "Bearer"
 func validateToken(encodedToken string) (*util.IdTokenClaims, error) {
 	claims := &util.IdTokenClaims{}
 	token, err := jwt.ParseWithClaims(encodedToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(util.SECRET_KEY), nil
+		return []byte(config.SecretKey), nil
 	})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
@@ -48,7 +49,11 @@ func AuthorizeJWT(u usecase.UserUsecase) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("auth", claims)
+		userId := claims.UserId
+		isAdmin := claims.IsAdmin
+
+		ctx.Set("user_id", userId)
+		ctx.Set("is_admin", isAdmin)
 		ctx.Next()
 	}
 }
