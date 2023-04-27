@@ -20,6 +20,9 @@ func createRouter() *gin.Engine {
 	categoryRepository := repository.NewCategoryRepository(&repository.CategoryRConfig{
 		DB: db.Get(),
 	})
+	tagRepository := repository.NewTagRepository(&repository.TagRConfig{
+		DB: db.Get(),
+	})
 
 	jwt := util.NewAuth(&util.AuthConfig{})
 
@@ -33,11 +36,15 @@ func createRouter() *gin.Engine {
 	categoryUsecase := usecase.NewCategoryUsecase(&usecase.CategoryUConfig{
 		CategoryRepository: categoryRepository,
 	})
+	tagUsecase := usecase.NewTagUsecase(&usecase.TagUConfig{
+		TagRepository: tagRepository,
+	})
 
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
 		CourseUsecase: courseUsecase,
 		CategoryUsecase: categoryUsecase,
+		TagUsecase: tagUsecase,
 	})
 }
 
