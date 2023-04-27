@@ -11,7 +11,6 @@ import (
 )
 
 func (h *Handler) GetCourse(ctx *gin.Context) {
-	ctx.GetInt("user_id")
 	slug := ctx.Param("slug")
 	response, err := h.courseUsecase.GetCourseBySlug(slug)
 	if err != nil {
@@ -54,4 +53,34 @@ func (h *Handler) CreateCourse(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, util.SuccessResponse("Course is created successfully", http.StatusCreated, nil))
+}
+
+func (h *Handler) DeleteCourse(ctx *gin.Context) {
+
+	request := &dto.DeleteCourseRequest{}
+	if err := ctx.ShouldBindJSON(request); err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, "BAD REQUEST")
+		return
+	}
+
+	err := util.Validate(request)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
+		return
+	}
+
+	isAdmin := ctx.GetBool("is_admin")
+
+	if !isAdmin {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.ErrorResponse("this feature can access by admin only", http.StatusUnauthorized))
+			return
+	}
+
+	err = h.courseUsecase.DeleteCourse(request.Id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, util.SuccessResponse("Course is deleted successfully", http.StatusOK, nil))
 }

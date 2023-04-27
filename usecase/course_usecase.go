@@ -9,6 +9,7 @@ import (
 type CourseUsecase interface {
 	GetCourseBySlug(slug string) (*dto.CourseDetailResponse, error)
 	CreateCourse(request *dto.CreateCourseRequest) error
+	DeleteCourse(id int) error
 }
 
 type courseUsecaseImpl struct {
@@ -43,8 +44,7 @@ func (u *courseUsecaseImpl) GetCourseBySlug(slug string) (*dto.CourseDetailRespo
 	return response, nil
 }
 
-func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) (error) {
-
+func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) error {
 	course := &entity.Course{
 		Title: request.Title,
 		Slug: request.Slug,
@@ -58,6 +58,20 @@ func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) (erro
 	}
 
 	err := u.courseRepository.Create(course)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *courseUsecaseImpl) DeleteCourse(id int) error {
+	course, err := u.courseRepository.FindById(id)
+	if err != nil {
+		return err
+	}
+	
+	err = u.courseRepository.Delete(course)
 	if err != nil {
 		return err
 	}

@@ -12,6 +12,10 @@ type CreateCourseRequest struct {
 	TagId              int    `json:"tag_id" validate:"required"`
 }
 
+type DeleteCourseRequest struct {
+	Id int `json:"id" validate:"required"`
+}
+
 type CourseDetailResponse struct {
 	Title              string `json:"title"`
 	Slug               string `json:"slug"`
