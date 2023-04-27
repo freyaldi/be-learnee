@@ -43,7 +43,7 @@ func (r *userRepositoryImpl) Update(user *entity.User) error {
 }
 
 func (r *userRepositoryImpl) FindById(id int) (user *entity.User, err error) {
-	err = r.db.Where("id = ?", id).Find(&user).Error
+	err = r.db.First(&user, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (r *userRepositoryImpl) FindById(id int) (user *entity.User, err error) {
 }
 
 func (r *userRepositoryImpl) FindByEmail(email string) (user *entity.User, err error) {
-	err = r.db.Where("email = ?", email).Find(&user).Error
+	err = r.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

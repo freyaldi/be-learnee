@@ -90,7 +90,7 @@ func (u *userUsecaseImpl) Login(request *dto.UserLoginRequest) (string, error) {
 func (u *userUsecaseImpl) Profile(id int) (*dto.UserDetailResponse, error) {
 	user, err := u.userRepository.FindById(id)
 	if err != nil {
-		return nil, er.ErrUserNotFound
+		return nil, err
 	}
 
 	response := &dto.UserDetailResponse{
