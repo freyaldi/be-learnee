@@ -9,6 +9,7 @@ import (
 type CourseUsecase interface {
 	GetCourseBySlug(slug string) (*dto.CourseDetailResponse, error)
 	CreateCourse(request *dto.CreateCourseRequest) error
+	UpdateCourse(id int, request *dto.UpdateCourseRequest) error
 	DeleteCourse(id int) error
 }
 
@@ -58,6 +59,28 @@ func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) error
 	}
 
 	err := u.courseRepository.Create(course)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *courseUsecaseImpl) UpdateCourse(id int, request *dto.UpdateCourseRequest) error {
+	
+	course := &entity.Course{
+		Title: request.Title,
+		Slug: request.Slug,
+		SummaryDescription: request.SummaryDescription,
+		Content: request.Content,
+		ImgThumbnail: request.ImgThumbnail,
+		ImgUrl: request.ImgUrl,
+		AuthorName: request.AuthorName,
+		CategoryId: request.CategoryId,
+		TagId: request.TagId,
+	}
+
+	err := u.courseRepository.Update(id, course)
 	if err != nil {
 		return err
 	}

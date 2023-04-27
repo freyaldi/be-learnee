@@ -7,7 +7,7 @@ import (
 
 type CourseRepository interface {
 	Create(course *entity.Course) error
-	Update(course *entity.Course) error
+	Update(id int, updatedCourse *entity.Course) error
 	Delete(course *entity.Course) error
 	FindById(id int) (*entity.Course, error)
 	FindBySlug(slug string) (*entity.Course, error)
@@ -35,8 +35,10 @@ func(r *courseRepositoryImpl) Create(course *entity.Course) error {
 	return nil
 }
 
-func(r *courseRepositoryImpl) Update(course *entity.Course) error {
-	err := r.db.Save(&course).Error
+func(r *courseRepositoryImpl) Update(id int, updatedCourse *entity.Course) error {
+	var course entity.Course
+	r.db.First(&course, id)
+	err := r.db.Model(&course).Updates(updatedCourse).Error
 	if err != nil {
 		return err
 	}

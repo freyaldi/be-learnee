@@ -36,6 +36,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		router.GET("/courses/:slug", h.GetCourse)
 
 		router.POST("/courses/create", h.CreateCourse)
+		router.POST("/courses/update/:id", h.UpdateCourse)
 		router.POST("/courses/delete", h.DeleteCourse)
 	}
 
