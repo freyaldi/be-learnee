@@ -9,6 +9,7 @@ import (
 
 type RouterConfig struct {
 	UserUsecase usecase.UserUsecase
+	CourseUsecase usecase.CourseUsecase
 }
 
 func NewRouter(c *RouterConfig) *gin.Engine {
@@ -16,6 +17,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 
 	h := handler.New(&handler.Config{
 		UserUsecase: c.UserUsecase,
+		CourseUsecase: c.CourseUsecase,
 	})
 
 	router.POST("/register", h.Register)
@@ -24,6 +26,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 	router.Use(middleware.AuthorizeJWT(c.UserUsecase))
 	{
 		router.GET("/profile", h.Profile)
+		router.GET("/courses/:slug", h.GetCourse)
 	}
 
 	return router

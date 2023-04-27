@@ -14,6 +14,9 @@ func createRouter() *gin.Engine {
 	userRepository := repository.NewUserRepository(&repository.UserRConfig{
 		DB: db.Get(),
 	})
+	courseRepository := repository.NewCourseRepository(&repository.CourseRConfig{
+		DB: db.Get(),
+	})
 
 	jwt := util.NewAuth(&util.AuthConfig{})
 
@@ -21,9 +24,13 @@ func createRouter() *gin.Engine {
 		UserRepository: userRepository,
 		JWT: jwt,
 	})
+	courseUsecase := usecase.NewCourseUsecase(&usecase.CourseUConfig{
+		CourseRepository: courseRepository,
+	})
 
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
+		CourseUsecase: courseUsecase,
 	})
 }
 
