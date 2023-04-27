@@ -62,3 +62,14 @@ func (h *Handler) Login(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, util.SuccessResponse("user log in successfully", http.StatusOK, token))
 }
+
+func (h *Handler) Profile(ctx *gin.Context) {
+	userId := ctx.GetInt("user_id")
+	response, err := h.userUsecase.Profile(userId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, util.SuccessResponse("get user's data success", http.StatusOK, response))
+}

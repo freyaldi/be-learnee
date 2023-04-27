@@ -11,6 +11,7 @@ import (
 type UserUsecase interface {
 	Register(*dto.UserRegisterRequest) error
 	Login(*dto.UserLoginRequest) (string, error)
+	Profile(id int) (*dto.UserDetailResponse, error)
 }
 
 type userUsecaseImpl struct {
@@ -84,4 +85,22 @@ func (u *userUsecaseImpl) Login(request *dto.UserLoginRequest) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (u *userUsecaseImpl) Profile(id int) (*dto.UserDetailResponse, error) {
+	user, err := u.userRepository.FindById(id)
+	if err != nil {
+		return nil, er.ErrUserNotFound
+	}
+
+	response := &dto.UserDetailResponse{
+		Fullname: user.Fullname,
+		Address: user.Address,
+		PhoneNumber: user.PhoneNumber,
+		IsAdmin: user.IsAdmin,
+		Level: string(user.Level),
+		Referral: user.Referral,
+	}
+
+	return response, nil
 }
