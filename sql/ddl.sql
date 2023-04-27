@@ -1,13 +1,12 @@
 create database online_learning_db;
 
 create type user_level as enum ('newbie', 'junior', 'senior', 'master');
-create type user_role as enum ('user', 'admin');
 
 create table users (
 	id SERIAL primary key not null,
 	email VARCHAR(256) unique not null,
 	password VARCHAR(256) not null,
-	role user_role not null,
+	is_admin BOOLEAN not null,
 	fullname VARCHAR(2566) not null,
 	address VARCHAR(256) not null,
 	phone_number VARCHAR(16) not null,
@@ -37,6 +36,9 @@ create table courses (
 	author_name VARCHAR(256) not null,
 	category_id INTEGER not null,
 	tag_id INTEGER not null,
+	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP null,
 	foreign key (category_id) references categories (id),
 	foreign key (tag_id) references tags (id)
 );
