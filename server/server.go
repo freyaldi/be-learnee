@@ -17,6 +17,9 @@ func createRouter() *gin.Engine {
 	courseRepository := repository.NewCourseRepository(&repository.CourseRConfig{
 		DB: db.Get(),
 	})
+	categoryRepository := repository.NewCategoryRepository(&repository.CategoryRConfig{
+		DB: db.Get(),
+	})
 
 	jwt := util.NewAuth(&util.AuthConfig{})
 
@@ -27,10 +30,14 @@ func createRouter() *gin.Engine {
 	courseUsecase := usecase.NewCourseUsecase(&usecase.CourseUConfig{
 		CourseRepository: courseRepository,
 	})
+	categoryUsecase := usecase.NewCategoryUsecase(&usecase.CategoryUConfig{
+		CategoryRepository: categoryRepository,
+	})
 
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
 		CourseUsecase: courseUsecase,
+		CategoryUsecase: categoryUsecase,
 	})
 }
 
