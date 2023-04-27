@@ -53,7 +53,7 @@ func (h *Handler) Login(ctx *gin.Context) {
 	token, err := h.userUsecase.Login(request)
 	if err != nil {
 		if errors.Is(err, er.ErrIncorrectCredentials) {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.UnauthorizedError())
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.ErrorResponse(err.Error(), http.StatusUnauthorized))
 			return
 		}
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
