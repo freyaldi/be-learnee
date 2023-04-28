@@ -7,10 +7,11 @@ import (
 )
 
 type CourseUsecase interface {
-	GetCourseBySlug(slug string) (*dto.CourseDetailResponse, error)
 	CreateCourse(request *dto.CreateCourseRequest) error
 	UpdateCourse(id int, request *dto.UpdateCourseRequest) error
 	DeleteCourse(id int) error
+	GetCourseBySlug(slug string) (*dto.CourseDetailResponse, error)
+	GetCourses(query *dto.CourseRequestQuery) ([]*dto.CourseResponse, error)
 }
 
 type courseUsecaseImpl struct {
@@ -47,15 +48,15 @@ func (u *courseUsecaseImpl) GetCourseBySlug(slug string) (*dto.CourseDetailRespo
 
 func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) error {
 	course := &entity.Course{
-		Title: request.Title,
-		Slug: request.Slug,
+		Title:              request.Title,
+		Slug:               request.Slug,
 		SummaryDescription: request.SummaryDescription,
-		Content: request.Content,
-		ImgThumbnail: request.ImgThumbnail,
-		ImgUrl: request.ImgUrl,
-		AuthorName: request.AuthorName,
-		CategoryId: request.CategoryId,
-		TagId: request.TagId,
+		Content:            request.Content,
+		ImgThumbnail:       request.ImgThumbnail,
+		ImgUrl:             request.ImgUrl,
+		AuthorName:         request.AuthorName,
+		CategoryId:         request.CategoryId,
+		TagId:              request.TagId,
 	}
 
 	err := u.courseRepository.Create(course)
@@ -67,17 +68,17 @@ func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) error
 }
 
 func (u *courseUsecaseImpl) UpdateCourse(id int, request *dto.UpdateCourseRequest) error {
-	
+
 	course := &entity.Course{
-		Title: request.Title,
-		Slug: request.Slug,
+		Title:              request.Title,
+		Slug:               request.Slug,
 		SummaryDescription: request.SummaryDescription,
-		Content: request.Content,
-		ImgThumbnail: request.ImgThumbnail,
-		ImgUrl: request.ImgUrl,
-		AuthorName: request.AuthorName,
-		CategoryId: request.CategoryId,
-		TagId: request.TagId,
+		Content:            request.Content,
+		ImgThumbnail:       request.ImgThumbnail,
+		ImgUrl:             request.ImgUrl,
+		AuthorName:         request.AuthorName,
+		CategoryId:         request.CategoryId,
+		TagId:              request.TagId,
 	}
 
 	err := u.courseRepository.Update(id, course)
@@ -93,11 +94,31 @@ func (u *courseUsecaseImpl) DeleteCourse(id int) error {
 	if err != nil {
 		return err
 	}
-	
+
 	err = u.courseRepository.Delete(course)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (u *courseUsecaseImpl) GetCourses(query *dto.CourseRequestQuery) (responses []*dto.CourseResponse, err error) {
+	courses, err := u.courseRepository.Find(query)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, c := range courses {
+		response := &dto.CourseResponse{
+			Title:        c.Title,
+			Slug:         c.Slug,
+			ImgThumbnail: c.ImgThumbnail,
+			ImgUrl:       c.ImgUrl,
+			AuthorName:   c.AuthorName,
+		}
+		responses = append(responses, response)
+	}
+
+	return responses, nil
 }

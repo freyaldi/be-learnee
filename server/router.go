@@ -29,6 +29,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 
 	router.GET("/categories", h.Categories)
 	router.GET("/tags", h.Tags)
+	router.GET("courses", h.GetCourses)
 
 	router.Use(middleware.AuthorizeJWT(c.UserUsecase))
 	{
