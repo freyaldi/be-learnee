@@ -37,3 +37,25 @@ type CourseDetailResponse struct {
 	ImgUrl             string `json:"img_url"`
 	AuthorName         string `json:"author_name"`
 }
+
+type CourseResponse struct {
+	Title              string `json:"title"`
+	Slug               string `json:"slug"`
+	ImgThumbnail       string `json:"img_thumbnail"`
+	ImgUrl             string `json:"img_url"`
+	AuthorName         string `json:"author_name"`
+}
+
+type CourseRequestQuery struct {
+	CourseFilterRequest
+	SortBy   string `form:"sortBy"`
+	Sort     string `form:"sort"`
+	Limit    int    `form:"limit"`
+	Page     int    `form:"page"`
+}
+
+type CourseFilterRequest struct {
+	Search   string `form:"s"`	
+	Category int    `form:"category"`
+	Tag      int    `form:"tag"`
+}
