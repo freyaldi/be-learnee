@@ -35,7 +35,7 @@ func (h *Handler) CreateCourse(ctx *gin.Context) {
 
 	request := &dto.CreateCourseRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, "BAD REQUEST")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
 		return
 	}
 
@@ -63,7 +63,7 @@ func (h *Handler) UpdateCourse(ctx *gin.Context) {
 
 	request := &dto.UpdateCourseRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, "BAD REQUEST")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
 		return
 	}
 
@@ -98,7 +98,7 @@ func (h *Handler) DeleteCourse(ctx *gin.Context) {
 
 	request := &dto.DeleteCourseRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, "BAD REQUEST")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
 		return
 	}
 

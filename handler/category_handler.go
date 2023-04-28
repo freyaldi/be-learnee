@@ -8,11 +8,11 @@ import (
 )
 
 func (h *Handler) Categories(ctx *gin.Context) {
-	response, err := h.categoryUsecase.GetCategories()
+	categories, err := h.categoryUsecase.GetCategories()
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, util.SuccessResponse("get categories' data success", http.StatusOK, response))
+	ctx.JSON(http.StatusOK, util.SuccessResponse("get categories' data success", http.StatusOK, categories))
 }

@@ -14,7 +14,7 @@ import (
 func (h *Handler) Register(ctx *gin.Context) {
 	request := &dto.UserRegisterRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, "BAD REQUEST")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
 		return
 	}
 
@@ -40,7 +40,7 @@ func (h *Handler) Register(ctx *gin.Context) {
 func (h *Handler) Login(ctx *gin.Context) {
 	request := &dto.UserLoginRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, "BAD REQUEST")
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
 		return
 	}
 	
@@ -60,16 +60,16 @@ func (h *Handler) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, util.SuccessResponse("user log in successfully", http.StatusOK, token))
+	ctx.JSON(http.StatusOK, util.SuccessResponse("user log in successfully", http.StatusOK, &dto.TokenResponse{Token: token}))
 }
 
 func (h *Handler) Profile(ctx *gin.Context) {
 	userId := ctx.GetInt("user_id")
-	response, err := h.userUsecase.Profile(userId)
+	profile, err := h.userUsecase.Profile(userId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, util.SuccessResponse("get user's data success", http.StatusOK, response))
+	ctx.JSON(http.StatusOK, util.SuccessResponse("get user's data success", http.StatusOK, profile))
 }

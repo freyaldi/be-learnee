@@ -8,11 +8,11 @@ import (
 )
 
 func (h *Handler) Tags(ctx *gin.Context) {
-	response, err := h.tagUsecase.GetTags()
+	tags, err := h.tagUsecase.GetTags()
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, util.SuccessResponse("get tags' data success", http.StatusOK, response))
+	ctx.JSON(http.StatusOK, util.SuccessResponse("get tags' data success", http.StatusOK, tags))
 }
