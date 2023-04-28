@@ -22,3 +22,7 @@ type UserDetailResponse struct {
 	Level       string `json:"level"`
 	Referral    string `json:"referral"`
 }
+
+type TokenResponse struct {
+	Token string `json:"token"`
+}
