@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"log"
-
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/entity"
 	er "git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/error"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/repository"
@@ -39,6 +37,16 @@ func (u *favoriteUsecaseImpl) AddFavorite(userId int, courseId int) error {
 	if err != nil {
 		return err
 	}
+
+	deletedAt, _ := favorite.DeletedAt.Value()
+	if deletedAt != nil {
+		err = u.favoriteRepository.Update(favorite)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	if favorite.Id != 0 {
 		return er.ErrCourseAlreadyFavorited
 	}
@@ -64,7 +72,6 @@ func (u *favoriteUsecaseImpl) RemoveFavorite(userId int, courseId int) error {
 	}
 
 	deletedAt, _ := favorite.DeletedAt.Value()
-	log.Print(deletedAt)
 	if deletedAt != nil {
 		return er.ErrCourseAlreadyUnFavorited
 	}

@@ -7,6 +7,7 @@ import (
 
 type FavoriteRepository interface {
 	Insert(*entity.Favorite) error
+	Update(*entity.Favorite) error
 	Delete(Id int) error
 	FindAll(userId int) ([]*entity.Favorite, error)
 	Count(courseId int) (int64, error)
@@ -29,6 +30,14 @@ func NewFavoriteRepository(c *FavoriteRConfig) FavoriteRepository {
 
 func (r *favoriteRepositoryImpl) Insert(favorite *entity.Favorite) error {
 	err := r.db.Create(&favorite).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *favoriteRepositoryImpl) Update(favorite *entity.Favorite) error {
+	err := r.db.Unscoped().Model(&favorite).Where("id = ?", favorite.Id).Update("deleted_at", nil).Error
 	if err != nil {
 		return err
 	}
