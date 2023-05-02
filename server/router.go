@@ -43,6 +43,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		router.POST("/courses/delete", h.DeleteCourse)
 
 		router.POST("/favorites/add", h.Favorite)
+		router.POST("/favorites/remove", h.Unfavorite)
 	}
 
 	return router

@@ -7,10 +7,10 @@ import (
 
 type FavoriteRepository interface {
 	Insert(*entity.Favorite) error
-	Delete(*entity.Favorite) error
+	Delete(Id int) error
 	FindAll(userId int) ([]*entity.Favorite, error)
 	Count(courseId int) (int64, error)
-	IsExist(userId int, courseId int) bool
+	Find(userId int, courseId int) (*entity.Favorite, error)
 }
 
 type favoriteRepositoryImpl struct {
@@ -35,8 +35,8 @@ func (r *favoriteRepositoryImpl) Insert(favorite *entity.Favorite) error {
 	return nil
 }
 
-func (r *favoriteRepositoryImpl) Delete(favorite *entity.Favorite) error {
-	err := r.db.Delete(&favorite).Error
+func (r *favoriteRepositoryImpl) Delete(Id int) error {
+	err := r.db.Delete(&entity.Favorite{}, Id).Error
 	if err != nil {
 		return err
 	}
@@ -59,8 +59,10 @@ func (r *favoriteRepositoryImpl) Count(CourseId int) (total int64, err error) {
 	return total, nil
 }
 
-func (r *favoriteRepositoryImpl) IsExist(userId int, courseId int) bool {
-	var favorite *entity.Favorite
-	r.db.Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&favorite)
-	return favorite != nil
+func (r *favoriteRepositoryImpl) Find(userId int, courseId int) (favorite *entity.Favorite, err error) {
+	r.db.Unscoped().Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&favorite)
+	if err != nil {
+		return nil, err
+	}
+	return favorite, nil
 }
