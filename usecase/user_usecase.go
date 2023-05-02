@@ -27,20 +27,11 @@ type UserUConfig struct {
 func NewUserUsecase(c *UserUConfig) UserUsecase {
 	return &userUsecaseImpl{
 		userRepository: c.UserRepository,
-		jwt: c.JWT,
+		jwt:            c.JWT,
 	}
 }
 
 func (u *userUsecaseImpl) Register(request *dto.UserRegisterRequest) error {
-
-	user, err := u.userRepository.FindByEmail(request.Email)
-	if err != nil {
-		return err
-	}
-	if user.Id != 0 {
-		return er.ErrUserAlreadyExists
-	}
-
 	referral := util.GenerateReferral()
 
 	hashedPassword, err := u.jwt.HashPassword(request.Password)
@@ -94,12 +85,12 @@ func (u *userUsecaseImpl) Profile(id int) (*dto.UserDetailResponse, error) {
 	}
 
 	response := &dto.UserDetailResponse{
-		Fullname: user.Fullname,
-		Address: user.Address,
+		Fullname:    user.Fullname,
+		Address:     user.Address,
 		PhoneNumber: user.PhoneNumber,
-		IsAdmin: user.IsAdmin,
-		Level: string(user.Level),
-		Referral: user.Referral,
+		IsAdmin:     user.IsAdmin,
+		Level:       string(user.Level),
+		Referral:    user.Referral,
 	}
 
 	return response, nil
