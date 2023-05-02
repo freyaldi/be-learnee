@@ -7,6 +7,7 @@ type Handler struct {
 	courseUsecase   usecase.CourseUsecase
 	categoryUsecase usecase.CategoryUsecase
 	tagUsecase      usecase.TagUsecase
+	favoriteUsecase usecase.FavoriteUsecase
 }
 
 type Config struct {
@@ -14,6 +15,7 @@ type Config struct {
 	CourseUsecase   usecase.CourseUsecase
 	CategoryUsecase usecase.CategoryUsecase
 	TagUsecase      usecase.TagUsecase
+	FavoriteUsecase usecase.FavoriteUsecase
 }
 
 func New(c *Config) *Handler {
@@ -22,5 +24,6 @@ func New(c *Config) *Handler {
 		courseUsecase:   c.CourseUsecase,
 		categoryUsecase: c.CategoryUsecase,
 		tagUsecase:      c.TagUsecase,
+		favoriteUsecase: c.FavoriteUsecase,
 	}
 }

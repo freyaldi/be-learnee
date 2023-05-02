@@ -23,6 +23,9 @@ func createRouter() *gin.Engine {
 	tagRepository := repository.NewTagRepository(&repository.TagRConfig{
 		DB: db.Get(),
 	})
+	favoriteRepository := repository.NewFavoriteRepository(&repository.FavoriteRConfig{
+		DB: db.Get(),
+	})
 
 	jwt := util.NewAuth(&util.AuthConfig{})
 
@@ -39,12 +42,17 @@ func createRouter() *gin.Engine {
 	tagUsecase := usecase.NewTagUsecase(&usecase.TagUConfig{
 		TagRepository: tagRepository,
 	})
+	favoriteUsecase := usecase.NewFavoriteUsecase(&usecase.FavoriteUConfig{
+		FavoriteRepository: favoriteRepository,
+		CourseRepository: courseRepository,
+	})
 
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
 		CourseUsecase: courseUsecase,
 		CategoryUsecase: categoryUsecase,
 		TagUsecase: tagUsecase,
+		FavoriteUsecase: favoriteUsecase,
 	})
 }
 
