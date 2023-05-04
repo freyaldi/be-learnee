@@ -26,26 +26,29 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		FavoriteUsecase: c.FavoriteUsecase,
 	})
 
-	router.POST("/register", h.Register)
-	router.POST("/login", h.Login)
+	api := router.Group("/api/v1")
 
-	router.GET("/categories", h.Categories)
-	router.GET("/tags", h.Tags)
-	router.GET("courses", h.GetCourses)
+	api.POST("/register", h.Register)
+	api.POST("/login", h.Login)
 
-	router.Use(middleware.AuthorizeJWT(c.UserUsecase))
+	api.GET("/categories", h.Categories)
+	api.GET("/tags", h.Tags)
+	api.GET("courses", h.GetCourses)
+
+	secured := api.Use(middleware.AuthorizeJWT(c.UserUsecase))
 	{
-		router.Use(middleware.AdminOnly(c.UserUsecase))
-		{
-			router.POST("/courses/create", h.CreateCourse)
-			router.POST("/courses/update/:id", h.UpdateCourse)
-			router.POST("/courses/delete", h.DeleteCourse)
-		}
-		router.GET("/profile", h.Profile)
-		router.GET("/courses/:slug", h.GetCourse)
+		secured.GET("/profile", h.Profile)
+		secured.GET("/courses/:slug", h.GetCourse)
 
-		router.POST("/favorites/add", h.Favorite)
-		router.POST("/favorites/remove", h.Unfavorite)
+		secured.POST("/favorites/add", h.Favorite)
+		secured.POST("/favorites/remove", h.Unfavorite)
+	}
+
+	adminOnly := secured.Use(middleware.AdminOnly(c.UserUsecase))
+	{
+		adminOnly.POST("/courses/create", h.CreateCourse)
+		adminOnly.POST("/courses/update/:id", h.UpdateCourse)
+		adminOnly.POST("/courses/delete", h.DeleteCourse)
 	}
 
 	return router
