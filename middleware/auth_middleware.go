@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/config"
@@ -54,6 +55,25 @@ func AuthorizeJWT(u usecase.UserUsecase) gin.HandlerFunc {
 
 		ctx.Set("user_id", userId)
 		ctx.Set("is_admin", isAdmin)
+		ctx.Next()
+	}
+}
+
+func AdminOnly(u usecase.UserUsecase) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		authError := util.UnauthorizedError()
+
+		isAdmin, ok := ctx.Get("is_admin")
+		if !ok {
+			ctx.AbortWithStatusJSON(authError.StatusCode, authError)
+			return
+		}
+
+		if !isAdmin.(bool) {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.ErrorResponse("this feature can access by admin only", http.StatusUnauthorized))
+			return
+		}
+
 		ctx.Next()
 	}
 }
