@@ -47,12 +47,6 @@ func (h *Handler) GetCourses(ctx *gin.Context) {
 }
 
 func (h *Handler) CreateCourse(ctx *gin.Context) {
-	isAdmin := ctx.GetBool("is_admin")
-	if !isAdmin {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.ErrorResponse("this feature can access by admin only", http.StatusUnauthorized))
-		return
-	}
-
 	request := &dto.CreateCourseRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
@@ -75,12 +69,6 @@ func (h *Handler) CreateCourse(ctx *gin.Context) {
 }
 
 func (h *Handler) UpdateCourse(ctx *gin.Context) {
-	isAdmin := ctx.GetBool("is_admin")
-	if !isAdmin {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.ErrorResponse("this feature can access by admin only", http.StatusUnauthorized))
-		return
-	}
-
 	request := &dto.UpdateCourseRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
@@ -110,12 +98,6 @@ func (h *Handler) UpdateCourse(ctx *gin.Context) {
 }
 
 func (h *Handler) DeleteCourse(ctx *gin.Context) {
-	isAdmin := ctx.GetBool("is_admin")
-	if !isAdmin {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, util.ErrorResponse("this feature can access by admin only", http.StatusUnauthorized))
-		return
-	}
-
 	request := &dto.DeleteCourseRequest{}
 	if err := ctx.ShouldBindJSON(request); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse(err.Error(), http.StatusBadRequest))
