@@ -8,6 +8,7 @@ type Handler struct {
 	categoryUsecase usecase.CategoryUsecase
 	tagUsecase      usecase.TagUsecase
 	favoriteUsecase usecase.FavoriteUsecase
+	cartUsecase     usecase.CartUsecase
 }
 
 type Config struct {
@@ -16,6 +17,7 @@ type Config struct {
 	CategoryUsecase usecase.CategoryUsecase
 	TagUsecase      usecase.TagUsecase
 	FavoriteUsecase usecase.FavoriteUsecase
+	CartUsecase     usecase.CartUsecase
 }
 
 func New(c *Config) *Handler {
@@ -25,5 +27,6 @@ func New(c *Config) *Handler {
 		categoryUsecase: c.CategoryUsecase,
 		tagUsecase:      c.TagUsecase,
 		favoriteUsecase: c.FavoriteUsecase,
+		cartUsecase:     c.CartUsecase,
 	}
 }
