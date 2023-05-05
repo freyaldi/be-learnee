@@ -68,7 +68,7 @@ func (r *cartRepositoryImpl) Count(CourseId int) (total int64, err error) {
 }
 
 func (r *cartRepositoryImpl) Find(userId int, courseId int) (cart *entity.Cart, err error) {
-	r.db.Unscoped().Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&cart)
+	err = r.db.Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&cart).Error
 	if err != nil {
 		return nil, err
 	}
