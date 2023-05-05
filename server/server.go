@@ -26,12 +26,15 @@ func createRouter() *gin.Engine {
 	favoriteRepository := repository.NewFavoriteRepository(&repository.FavoriteRConfig{
 		DB: db.Get(),
 	})
+	cartRepository := repository.NewCartRepository(&repository.CartRConfig{
+		DB: db.Get(),
+	})
 
 	jwt := util.NewAuth(&util.AuthConfig{})
 
 	userUsecase := usecase.NewUserUsecase(&usecase.UserUConfig{
 		UserRepository: userRepository,
-		JWT: jwt,
+		JWT:            jwt,
 	})
 	courseUsecase := usecase.NewCourseUsecase(&usecase.CourseUConfig{
 		CourseRepository: courseRepository,
@@ -44,21 +47,26 @@ func createRouter() *gin.Engine {
 	})
 	favoriteUsecase := usecase.NewFavoriteUsecase(&usecase.FavoriteUConfig{
 		FavoriteRepository: favoriteRepository,
+		CourseRepository:   courseRepository,
+	})
+	cartUsecase := usecase.NewCartUsecase(&usecase.CartUConfig{
+		CartRepository:   cartRepository,
 		CourseRepository: courseRepository,
 	})
 
 	return NewRouter(&RouterConfig{
-		UserUsecase: userUsecase,
-		CourseUsecase: courseUsecase,
+		UserUsecase:     userUsecase,
+		CourseUsecase:   courseUsecase,
 		CategoryUsecase: categoryUsecase,
-		TagUsecase: tagUsecase,
+		TagUsecase:      tagUsecase,
 		FavoriteUsecase: favoriteUsecase,
+		CartUsecase:     cartUsecase,
 	})
 }
 
-func Init()  {
+func Init() {
 	r := createRouter()
-	err :=r.Run(":8080")
+	err := r.Run(":8080")
 	if err != nil {
 		log.Println("error while running server", err)
 		return

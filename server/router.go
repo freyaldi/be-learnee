@@ -13,6 +13,7 @@ type RouterConfig struct {
 	CategoryUsecase usecase.CategoryUsecase
 	TagUsecase      usecase.TagUsecase
 	FavoriteUsecase usecase.FavoriteUsecase
+	CartUsecase     usecase.CartUsecase
 }
 
 func NewRouter(c *RouterConfig) *gin.Engine {
@@ -24,6 +25,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		CategoryUsecase: c.CategoryUsecase,
 		TagUsecase:      c.TagUsecase,
 		FavoriteUsecase: c.FavoriteUsecase,
+		CartUsecase:     c.CartUsecase,
 	})
 
 	api := router.Group("/api/v1")
@@ -42,6 +44,8 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 
 		secured.POST("/favorites/add", h.Favorite)
 		secured.POST("/favorites/remove", h.Unfavorite)
+
+		secured.POST("/carts/add", h.AddToCart)
 	}
 
 	adminOnly := secured.Use(middleware.AdminOnly(c.UserUsecase))
