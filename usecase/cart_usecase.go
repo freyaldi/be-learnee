@@ -8,6 +8,7 @@ import (
 
 type CartUsecase interface {
 	AddToCart(userId int, courseId int) error
+	RemoveFromCart(userId int, courseId int) error
 }
 
 type cartUsecaseImpl struct {
@@ -51,6 +52,21 @@ func(u *cartUsecaseImpl) AddToCart(userId int, courseId int) error {
 	}
 
 	err = u.cartRepository.Insert(cartedCourse)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func(u *cartUsecaseImpl) RemoveFromCart(userId int, courseId int) error {
+
+	cartedCourse, err := u.cartRepository.Find(userId, courseId)
+	if err != nil {
+		return err
+	}
+
+	err = u.cartRepository.Delete(cartedCourse.Id)
 	if err != nil {
 		return err
 	}
