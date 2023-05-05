@@ -46,6 +46,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		secured.POST("/favorites/remove", h.Unfavorite)
 
 		secured.POST("/carts/add", h.AddToCart)
+		secured.POST("/carts/remove", h.RemoveFromCart)
 	}
 
 	adminOnly := secured.Use(middleware.AdminOnly(c.UserUsecase))
