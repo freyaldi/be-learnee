@@ -45,6 +45,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		secured.POST("/favorites/add", h.Favorite)
 		secured.POST("/favorites/remove", h.Unfavorite)
 
+		secured.GET("/carts", h.Carts)
 		secured.POST("/carts/add", h.AddToCart)
 		secured.POST("/carts/remove", h.RemoveFromCart)
 	}
