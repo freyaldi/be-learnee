@@ -29,6 +29,9 @@ func createRouter() *gin.Engine {
 	cartRepository := repository.NewCartRepository(&repository.CartRConfig{
 		DB: db.Get(),
 	})
+	voucherRepository := repository.NewVoucherRepository(&repository.VoucherRConfig{
+		DB: db.Get(),
+	})
 
 	jwt := util.NewAuth(&util.AuthConfig{})
 
@@ -53,6 +56,9 @@ func createRouter() *gin.Engine {
 		CartRepository:   cartRepository,
 		CourseRepository: courseRepository,
 	})
+	voucherUsecase := usecase.NewVoucherUsecase(&usecase.VoucherUConfig{
+		VoucherRepository: voucherRepository,
+	})
 
 	return NewRouter(&RouterConfig{
 		UserUsecase:     userUsecase,
@@ -61,6 +67,7 @@ func createRouter() *gin.Engine {
 		TagUsecase:      tagUsecase,
 		FavoriteUsecase: favoriteUsecase,
 		CartUsecase:     cartUsecase,
+		VoucherUsecase:  voucherUsecase,
 	})
 }
 
