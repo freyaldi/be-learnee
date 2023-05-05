@@ -44,7 +44,7 @@ func (r *cartRepositoryImpl) Delete(Id int) error {
 }
 
 func (r *cartRepositoryImpl) FindSelectedCart(userId int, courseIds []int) (carts []*entity.Cart, err error) {
-	err = r.db.Where("user_id = ?", userId).Find(&carts, courseIds).Error
+	err = r.db.Where("user_id = ?", userId).Where("course_id in ?", courseIds).Find(&carts).Error
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (r *cartRepositoryImpl) FindSelectedCart(userId int, courseIds []int) (cart
 }
 
 func (r *cartRepositoryImpl) FindAll(userId int) (carts []*entity.Cart, err error) {
-	err = r.db.Where("user_id = ?", userId).Find(&carts).Error
+	err = r.db.Preload("Course").Where("user_id = ?", userId).Find(&carts).Error
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (r *cartRepositoryImpl) Count(CourseId int) (total int64, err error) {
 }
 
 func (r *cartRepositoryImpl) Find(userId int, courseId int) (cart *entity.Cart, err error) {
-	err = r.db.Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&cart).Error
+	err = r.db.Where("course_id = ?", courseId).Where("user_id = ?", userId).Find(&cart).Error
 	if err != nil {
 		return nil, err
 	}
