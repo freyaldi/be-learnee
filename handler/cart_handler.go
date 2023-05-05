@@ -66,3 +66,19 @@ func (h *Handler) RemoveFromCart(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, util.SuccessResponse("Course is removed from cart successfully", http.StatusOK, nil))
 }
+
+func (h *Handler) Carts(ctx *gin.Context) {
+	userId := ctx.GetInt("user_id")
+
+	carts, err := h.cartUsecase.GetCarts(userId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse("cart is empty", http.StatusBadRequest))
+			return
+		}
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, util.SuccessResponse("get carts successfully", http.StatusOK, carts))
+}
