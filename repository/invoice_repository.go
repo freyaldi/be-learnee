@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"log"
-
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/entity"
 	"gorm.io/gorm"
 )
@@ -35,9 +33,9 @@ func (r *invoiceRepositoryImpl) Insert(userId int, carts []*entity.Cart, voucher
 	err := tx.Create(&invoice).Error
 	if err != nil {
 		tx.Rollback()
-		log.Print(1)
 		return nil, err
 	}
+	
 	var price float64 = 0
 	for _, c := range carts {
 		transaction := &entity.Transaction{
@@ -49,30 +47,31 @@ func (r *invoiceRepositoryImpl) Insert(userId int, carts []*entity.Cart, voucher
 		err = tx.Create(transaction).Error
 		if err != nil {
 			tx.Rollback()
-			log.Print(2)
 			return nil, err
 		}
 
 		err = tx.Delete(c).Error
 		if err != nil {
 			tx.Rollback()
-			log.Print(4)
 			return nil, err
 		}
 
 		price += transaction.SoldPrice
 	}
 
-	price = price * (1 - float64(invoice.BenefitDiscount))
+	discount := price * float64(invoice.BenefitDiscount)
 	if voucher != nil {
-		price = price * (1 - float64(voucher.Benefit))
+		discount = discount + price * float64(voucher.Benefit)
 	}
-	invoice.Total = price
+	cost := price - discount
+
+	invoice.TotalPrice = price
+	invoice.TotalDiscount = discount
+	invoice.TotalCost = cost
 
 	err = tx.Save(invoice).Error
 	if err != nil {
 		tx.Rollback()
-		log.Print(3)
 		return nil, err
 	}
 
