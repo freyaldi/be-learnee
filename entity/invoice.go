@@ -6,7 +6,9 @@ type Invoice struct {
 	gorm.Model
 	Id              int `gorm:"primaryKey"`
 	Status          transactionStatus
-	Total           float64
+	TotalPrice      float64
+	TotalDiscount   float64
+	TotalCost       float64
 	BenefitDiscount float32
 	UserId          int
 	VoucherId       *int
@@ -19,5 +21,5 @@ type transactionStatus string
 const (
 	Success transactionStatus = "success"
 	Pending transactionStatus = "pending"
-	Failed transactionStatus = "failed"
+	Failed  transactionStatus = "failed"
 )
