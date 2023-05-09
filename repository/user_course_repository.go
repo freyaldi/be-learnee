@@ -28,16 +28,18 @@ func NewUserCourseRepository(c *UserCourseRConfig) UserCourseRepository {
 	}
 }
 
-func (r *usercourseRepositoryImpl) Insert(usercourse *entity.UserCourse) error {
-	err := r.db.Create(&usercourse).Error
+func (r *usercourseRepositoryImpl) Insert(userCourse *entity.UserCourse) error {
+	err := r.db.Create(&userCourse).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *usercourseRepositoryImpl) Update(usercourse *entity.UserCourse) error {
-	err := r.db.Unscoped().Model(&usercourse).Where("id = ?", usercourse.Id).Update("deleted_at", nil).Error
+func (r *usercourseRepositoryImpl) Update(updatedUserCourse *entity.UserCourse) error {
+	var userCourse entity.UserCourse
+	r.db.Where("course_id = ?", updatedUserCourse.CourseId).Where("user_id", updatedUserCourse.UserId).First(&userCourse)
+	err := r.db.Model(&userCourse).Updates(updatedUserCourse).Error
 	if err != nil {
 		return err
 	}
