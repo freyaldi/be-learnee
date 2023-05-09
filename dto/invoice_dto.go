@@ -5,6 +5,11 @@ type CheckoutRequest struct {
 	VoucherCode *string `json:"voucher_code"`
 }
 
+type UpdateTransactionRequest struct {
+	InvoiceId int    `json:"invoice_id" validate:"required"`
+	Status    string `json:"status" validate:"required"`
+}
+
 type InvoiceResponse struct {
 	Id              int     `json:"id"`
 	Name            string  `json:"name"`

@@ -79,8 +79,18 @@ func (r *invoiceRepositoryImpl) Insert(userId int, carts []*entity.Cart, voucher
 	return invoice, nil
 }
 
-func (r *invoiceRepositoryImpl) Update(*entity.Invoice) error {
-	panic("unimplemented")
+func (r *invoiceRepositoryImpl) Update(invoice *entity.Invoice) error {
+	tx := r.db.Begin()
+
+	invoice.Status = entity.Success
+	err := tx.Save(invoice).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	tx.Commit()
+	return nil
 }
 
 func (r *invoiceRepositoryImpl) FindAll() ([]*entity.Invoice, error) {

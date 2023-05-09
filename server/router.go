@@ -68,6 +68,8 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		adminOnly.POST("/courses/create", h.CreateCourse)
 		adminOnly.POST("/courses/update/:id", h.UpdateCourse)
 		adminOnly.POST("/courses/delete", h.DeleteCourse)
+
+		adminOnly.POST("/transactions/update", h.UpdateTransaction)
 	}
 
 	return router
