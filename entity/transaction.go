@@ -1,6 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Transaction struct {
+	gorm.Model
 	Id        int `gorm:"primaryKey"`
 	InvoiceId int
 	CourseId  int
