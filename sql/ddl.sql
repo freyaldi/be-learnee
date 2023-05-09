@@ -10,7 +10,7 @@ create table users (
 	fullname VARCHAR(2566) not null,
 	address VARCHAR(256) not null,
 	phone_number VARCHAR(16) not null,
-	level user_level not null,
+	level user_level,
 	referral VARCHAR(256) not null,
 	ref_referral VARCHAR(256)
 );
@@ -36,6 +36,7 @@ create table courses (
 	author_name VARCHAR(256) not null,
 	category_id INTEGER not null,
 	tag_id INTEGER not null,
+	price numeric not null,
 	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
     updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP null,
@@ -63,6 +64,9 @@ create table user_courses(
 	user_id INTEGER not null,
 	course_id INTEGER not null,
 	status course_status not null,
+	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP null,
 	foreign key (user_id) references users (id),
 	foreign key (course_id) references courses (id)
 );
@@ -71,12 +75,14 @@ create table favorites(
 	id SERIAL primary key not null,
 	user_id INTEGER not null,
 	course_id INTEGER not null,
-	added_date DATE not null,
+	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP null,
 	foreign key (user_id) references users (id),
 	foreign key (course_id) references courses (id)
 );
 
-create type track_status as enum ('completed', 'process', 'canceled');
+create type track_status as enum ('received', 'processed', 'canceled');
 
 create table tracks(
 	id SERIAL primary key not null,
@@ -113,16 +119,20 @@ create table user_vouchers(
 	foreign key (voucher_id) references vouchers (id)
 );
 
-create type invoice_status as enum ('completed', 'process', 'canceled');
+create type invoice_status as enum ('success', 'pending', 'failed');
 
 create table invoices(
 	id SERIAL primary key not null,
 	user_id INTEGER not null,
 	voucher_id INTEGER,
 	status invoice_status not null,
-	total numeric not null,
-	payment_date TIMESTAMP not null,
 	benefit_discount DECIMAL,
+	total_price numeric not null,
+	total_discount numeric not null,
+	total_cost numeric not null,
+	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP null,
 	foreign key (user_id) references users (id),
 	foreign key (voucher_id) references vouchers (id)
 );
@@ -132,9 +142,20 @@ create table transactions(
 	invoice_id INTEGER not null,
 	course_id INTEGER not null,
 	sold_price numeric not null,
+	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP null,
 	foreign key (invoice_id) references invoices (id),
 	foreign key (course_id) references courses (id)
 );
 
-
-
+create table carts(
+	id SERIAL primary key not null,
+	user_id INTEGER not null,
+	course_id INTEGER not null,
+	created_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP not null default CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP null,
+	foreign key (user_id) references users (id),
+	foreign key (course_id) references courses (id)
+);
