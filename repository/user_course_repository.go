@@ -55,7 +55,7 @@ func (r *usercourseRepositoryImpl) Delete(Id int) error {
 }
 
 func (r *usercourseRepositoryImpl) FindAll(userId int) (usercourses []*entity.UserCourse, err error) {
-	err = r.db.Where("user_id = ?", userId).Find(&usercourses).Error
+	err = r.db.Preload("Course").Where("user_id = ?", userId).Find(&usercourses).Error
 	if err != nil {
 		return nil, err
 	}

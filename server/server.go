@@ -35,7 +35,10 @@ func createRouter() *gin.Engine {
 	invoiceRepository := repository.NewInvoiceRepository(&repository.InvoiceRConfig{
 		DB: db.Get(),
 	})
-	userCourserepository := repository.NewUserCourseRepository(&repository.UserCourseRConfig{
+	userCourseRepository := repository.NewUserCourseRepository(&repository.UserCourseRConfig{
+		DB: db.Get(),
+	})
+	transactionRepository := repository.NewTransactionRepository(&repository.TransactionRConfig{
 		DB: db.Get(),
 	})
 
@@ -66,11 +69,14 @@ func createRouter() *gin.Engine {
 		VoucherRepository: voucherRepository,
 	})
 	invoiceUsecase := usecase.NewInvoiceUsecase(&usecase.InvoiceUConfig{
-		InvoiceRepository: invoiceRepository,
-		CartRepository:    cartRepository,
+		InvoiceRepository:     invoiceRepository,
+		CartRepository:        cartRepository,
+		VoucherRepository:     voucherRepository,
+		TransactionRepository: transactionRepository,
+		UserCourseRepository:  userCourseRepository,
 	})
 	userCourseUsecase := usecase.NewUserCourseUsecase(&usecase.UserCourseUConfig{
-		UserCourseRepository: userCourserepository,
+		UserCourseRepository: userCourseRepository,
 	})
 
 	return NewRouter(&RouterConfig{

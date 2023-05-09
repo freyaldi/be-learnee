@@ -2,11 +2,14 @@ package usecase
 
 import (
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/dto"
+	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/entity"
+	er "git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/error"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/repository"
 )
 
 type UserCourseUsecase interface {
 	GetUserCourses(userId int) ([]*dto.UserCourseResponse, error)
+	CompleteCourse(userId int, courseId int) error
 }
 
 type userCourseUsecaseImpl struct {
@@ -44,4 +47,19 @@ func (u *userCourseUsecaseImpl) GetUserCourses(userId int) (responses []*dto.Use
 	}
 
 	return responses, nil
+}
+
+func (u *userCourseUsecaseImpl) CompleteCourse(userId int, courseId int) error {
+	course, err := u.userCourseRepository.Find(userId, courseId)
+	if err != nil {
+		return er.ErrCourseNotFound
+	}
+
+	course.Status = entity.Completed
+	err = u.userCourseRepository.Update(course)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

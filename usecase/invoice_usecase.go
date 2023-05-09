@@ -3,6 +3,7 @@ package usecase
 import (
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/dto"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/entity"
+	er "git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/error"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/repository"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/util"
 )
@@ -44,7 +45,14 @@ func (u *invoiceUsecaseImpl) CreateInvoice(userId int, checkout *dto.CheckoutReq
 		return nil, err
 	}
 
-	voucher, _ := u.voucherRepository.FindByCode(*checkout.VoucherCode)
+	if len(carts) == 0 {
+		return nil, er.ErrCartIsEmpty
+	}
+
+	var voucher = &entity.Voucher{}
+	if checkout.VoucherCode != nil {
+		voucher, _ = u.voucherRepository.FindByCode(*checkout.VoucherCode)
+	}
 	invoice, err := u.invoiceRepository.Insert(userId, carts, voucher)
 	if err != nil {
 		return nil, err
@@ -53,13 +61,16 @@ func (u *invoiceUsecaseImpl) CreateInvoice(userId int, checkout *dto.CheckoutReq
 	invoiceResponse := &dto.InvoiceResponse{
 		Id:              invoice.Id,
 		Name:            invoice.User.Fullname,
-		VoucherCode:     voucher.VoucherCode,
 		BenefitDiscount: util.UserLevelBenefit(&carts[0].User),
-		VoucherDiscount: voucher.Benefit,
 		Status:          string(invoice.Status),
 		Price:           invoice.TotalPrice,
 		Discount:        invoice.TotalDiscount,
 		Cost:            invoice.TotalCost,
+	}
+
+	if voucher.Id != 0 {
+		invoiceResponse.VoucherCode = voucher.VoucherCode
+		invoiceResponse.VoucherDiscount = voucher.Benefit
 	}
 
 	return invoiceResponse, nil
@@ -71,17 +82,21 @@ func (u *invoiceUsecaseImpl) UpdateInvoice(request *dto.UpdateTransactionRequest
 		return err
 	}
 
+	if request.Status == string(invoice.Status) {
+		return er.ErrTransactionStatusAlreadyAsExpected
+	}
+
 	if request.Status == string(entity.Success) {
 		transactions, err := u.transactionRepository.FindByInvoiceId(invoice.Id)
 		if err != nil {
 			return err
 		}
-		
+
 		for _, t := range transactions {
 			userCourse := &entity.UserCourse{
 				CourseId: t.CourseId,
-				UserId: invoice.UserId,
-				Status: entity.OnProgress,
+				UserId:   invoice.UserId,
+				Status:   entity.OnProgress,
 			}
 
 			err = u.userCourseRepository.Insert(userCourse)

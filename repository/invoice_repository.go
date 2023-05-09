@@ -97,6 +97,10 @@ func (r *invoiceRepositoryImpl) FindAll() ([]*entity.Invoice, error) {
 	panic("unimplemented")
 }
 
-func (r *invoiceRepositoryImpl) FindById(id int) (*entity.Invoice, error) {
-	panic("unimplemented")
+func (r *invoiceRepositoryImpl) FindById(id int) (invoice *entity.Invoice, err error) {
+	err = r.db.First(&invoice, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return invoice, nil
 }

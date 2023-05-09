@@ -10,3 +10,7 @@ type UserCourseResponse struct {
 	AuthorName         string `json:"author_name"`
 	Status             string `json:"status"`
 }
+
+type CompleteCourseRequest struct {
+	CourseId int `json:"course_id" validate:"required"`
+}
