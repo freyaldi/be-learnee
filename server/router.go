@@ -8,28 +8,30 @@ import (
 )
 
 type RouterConfig struct {
-	UserUsecase     usecase.UserUsecase
-	CourseUsecase   usecase.CourseUsecase
-	CategoryUsecase usecase.CategoryUsecase
-	TagUsecase      usecase.TagUsecase
-	FavoriteUsecase usecase.FavoriteUsecase
-	CartUsecase     usecase.CartUsecase
-	VoucherUsecase  usecase.VoucherUsecase
-	InvoiceUsecase  usecase.InvoiceUsecase
+	UserUsecase       usecase.UserUsecase
+	CourseUsecase     usecase.CourseUsecase
+	CategoryUsecase   usecase.CategoryUsecase
+	TagUsecase        usecase.TagUsecase
+	FavoriteUsecase   usecase.FavoriteUsecase
+	CartUsecase       usecase.CartUsecase
+	VoucherUsecase    usecase.VoucherUsecase
+	InvoiceUsecase    usecase.InvoiceUsecase
+	UserCourseUsecase usecase.UserCourseUsecase
 }
 
 func NewRouter(c *RouterConfig) *gin.Engine {
 	router := gin.Default()
 
 	h := handler.New(&handler.Config{
-		UserUsecase:     c.UserUsecase,
-		CourseUsecase:   c.CourseUsecase,
-		CategoryUsecase: c.CategoryUsecase,
-		TagUsecase:      c.TagUsecase,
-		FavoriteUsecase: c.FavoriteUsecase,
-		CartUsecase:     c.CartUsecase,
-		VoucherUsecase:  c.VoucherUsecase,
-		InvoiceUsecase:  c.InvoiceUsecase,
+		UserUsecase:       c.UserUsecase,
+		CourseUsecase:     c.CourseUsecase,
+		CategoryUsecase:   c.CategoryUsecase,
+		TagUsecase:        c.TagUsecase,
+		FavoriteUsecase:   c.FavoriteUsecase,
+		CartUsecase:       c.CartUsecase,
+		VoucherUsecase:    c.VoucherUsecase,
+		InvoiceUsecase:    c.InvoiceUsecase,
+		UserCourseUsecase: c.UserCourseUsecase,
 	})
 
 	api := router.Group("/api/v1")
@@ -49,6 +51,8 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 
 		secured.POST("/favorites/add", h.Favorite)
 		secured.POST("/favorites/remove", h.Unfavorite)
+
+		secured.GET("/my-courses", h.GetUserCourses)
 
 		secured.GET("/carts", h.Carts)
 		secured.POST("/carts/add", h.AddToCart)
