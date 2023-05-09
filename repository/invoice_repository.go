@@ -43,7 +43,7 @@ func (r *invoiceRepositoryImpl) Insert(userId int, carts []*entity.Cart, voucher
 		transaction := &entity.Transaction{
 			InvoiceId: invoice.Id,
 			CourseId:  c.CourseId,
-			SoldPrice: c.Price,
+			SoldPrice: c.Course.Price,
 		}
 
 		err = tx.Create(transaction).Error

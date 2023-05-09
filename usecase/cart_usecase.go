@@ -30,8 +30,6 @@ func NewCartUsecase(c *CartUConfig) CartUsecase {
 	}
 }
 
-const CoursePrice = 150_000
-
 func(u *cartUsecaseImpl) AddToCart(userId int, courseId int) error {
 	_, err := u.courseRepository.FindById(courseId)
 	if err != nil {
@@ -50,7 +48,6 @@ func(u *cartUsecaseImpl) AddToCart(userId int, courseId int) error {
 	cartedCourse = &entity.Cart{
 		UserId: userId,
 		CourseId: courseId,
-		Price: CoursePrice,
 	}
 
 	err = u.cartRepository.Insert(cartedCourse)
@@ -91,7 +88,7 @@ func(u *cartUsecaseImpl) GetCarts(userId int) (carts []*dto.CartsResponse, err e
 			Title: cc.Course.Title,
 			ImgThumbnail: cc.Course.ImgThumbnail,
 			AuthorName: cc.Course.AuthorName,
-			Price: cc.Price,
+			Price: cc.Course.Price,
 		}
 		carts = append(carts, cart)
 	}
