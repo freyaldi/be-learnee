@@ -44,7 +44,7 @@ func (r *cartRepositoryImpl) Delete(Id int) error {
 }
 
 func (r *cartRepositoryImpl) FindSelectedCart(userId int, courseIds []int) (carts []*entity.Cart, err error) {
-	err = r.db.Preload("Course").Where("user_id = ?", userId).Where("course_id in ?", courseIds).Find(&carts).Error
+	err = r.db.Preload("Course").Preload("User").Where("user_id = ?", userId).Where("course_id in ?", courseIds).Find(&carts).Error
 	if err != nil {
 		return nil, err
 	}
