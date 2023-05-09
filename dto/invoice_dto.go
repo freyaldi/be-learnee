@@ -12,6 +12,7 @@ type InvoiceResponse struct {
 	BenefitDiscount float32 `json:"benefit_discount"`
 	VoucherDiscount float32 `json:"voucher_discount"`
 	Status          string  `json:"status"`
+	Price           float64 `json:"price"`
 	Discount        float64 `json:"discount"`
-	Total           float64 `json:"total"`
+	Cost            float64 `json:"cost"`
 }
