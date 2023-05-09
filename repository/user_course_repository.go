@@ -71,7 +71,7 @@ func (r *usercourseRepositoryImpl) Count(CourseId int) (total int64, err error) 
 }
 
 func (r *usercourseRepositoryImpl) Find(userId int, courseId int) (usercourse *entity.UserCourse, err error) {
-	r.db.Unscoped().Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&usercourse)
+	r.db.Where("course_id = ?", courseId).Where("user_id = ?", userId).First(&usercourse)
 	if err != nil {
 		return nil, err
 	}

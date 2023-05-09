@@ -64,6 +64,7 @@ func createRouter() *gin.Engine {
 	cartUsecase := usecase.NewCartUsecase(&usecase.CartUConfig{
 		CartRepository:   cartRepository,
 		CourseRepository: courseRepository,
+		UserCourseRepository: userCourseRepository,
 	})
 	voucherUsecase := usecase.NewVoucherUsecase(&usecase.VoucherUConfig{
 		VoucherRepository: voucherRepository,

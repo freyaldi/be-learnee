@@ -17,16 +17,19 @@ type CartUsecase interface {
 type cartUsecaseImpl struct {
 	cartRepository   repository.CartRepository
 	courseRepository repository.CourseRepository
+	userCourseRepository repository.UserCourseRepository
 }
 type CartUConfig struct {
 	CartRepository   repository.CartRepository
 	CourseRepository repository.CourseRepository
+	UserCourseRepository repository.UserCourseRepository
 }
 
 func NewCartUsecase(c *CartUConfig) CartUsecase {
 	return &cartUsecaseImpl{
 		cartRepository:   c.CartRepository,
 		courseRepository: c.CourseRepository,
+		userCourseRepository: c.UserCourseRepository,
 	}
 }
 
@@ -34,6 +37,15 @@ func(u *cartUsecaseImpl) AddToCart(userId int, courseId int) error {
 	_, err := u.courseRepository.FindById(courseId)
 	if err != nil {
 		return err
+	}
+
+	userCourse, err := u.userCourseRepository.Find(userId, courseId)
+	if err != nil {
+		return err
+	}
+	
+	if userCourse.Id != 0 {
+		return er.ErrCourseAlreadyPurchased
 	}
 
 	cartedCourse, err := u.cartRepository.Find(userId, courseId)

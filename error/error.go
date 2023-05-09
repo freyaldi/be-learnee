@@ -10,5 +10,6 @@ var (
 	ErrCourseAlreadyUnFavorited           = errors.New("course already unfavorited")
 	ErrCourseNotFound                     = errors.New("course is not found")
 	ErrCartIsEmpty                        = errors.New("cart is empty")
+	ErrCourseAlreadyPurchased             = errors.New("course already purchased")
 	ErrTransactionStatusAlreadyAsExpected = errors.New("transaction status already as expected")
 )
