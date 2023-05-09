@@ -47,6 +47,8 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 	secured := api.Use(middleware.AuthorizeJWT(c.UserUsecase))
 	{
 		secured.GET("/profile", h.Profile)
+		secured.POST("/profile/update", h.UpdateProfile)
+
 		secured.GET("/courses/:slug", h.GetCourse)
 
 		secured.POST("/favorites/add", h.Favorite)

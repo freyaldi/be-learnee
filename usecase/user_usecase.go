@@ -12,6 +12,7 @@ type UserUsecase interface {
 	Register(*dto.UserRegisterRequest) error
 	Login(*dto.UserLoginRequest) (string, error)
 	Profile(id int) (*dto.UserDetailResponse, error)
+	UpdateProfile(id int, request *dto.UserUpdateProfileRequest) error
 }
 
 type userUsecaseImpl struct {
@@ -101,4 +102,28 @@ func (u *userUsecaseImpl) Profile(id int) (*dto.UserDetailResponse, error) {
 	}
 
 	return response, nil
+}
+
+func (u *userUsecaseImpl) UpdateProfile(id int, request *dto.UserUpdateProfileRequest) error {
+	user, err := u.userRepository.FindById(id)
+	if err != nil {
+		return err
+	}
+
+	isPasswordCorrect := u.jwt.ComparePassword(user.Password, request.PasswordConfirmation)
+	if !isPasswordCorrect {
+		return er.ErrIncorrectCredentials
+	}
+
+	user.Email = request.Email
+	user.Fullname = request.Fullname
+	user.Address = request.Address
+	user.PhoneNumber = request.PhoneNumber
+
+	err = u.userRepository.Update(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

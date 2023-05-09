@@ -27,3 +27,11 @@ type UserDetailResponse struct {
 type TokenResponse struct {
 	Token string `json:"token"`
 }
+
+type UserUpdateProfileRequest struct {
+	PasswordConfirmation string `json:"password_confirmation" validate:"required"`
+	Email                string `json:"email" validate:"required,email"`
+	Fullname             string `json:"fullname" validate:"required"`
+	Address              string `json:"address" validate:"required"`
+	PhoneNumber          string `json:"phone_number" validate:"required,numeric,min=10,max=13"`
+}
