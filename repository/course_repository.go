@@ -39,8 +39,11 @@ func(r *courseRepositoryImpl) Create(course *entity.Course) error {
 
 func(r *courseRepositoryImpl) Update(id int, updatedCourse *entity.Course) error {
 	var course entity.Course
-	r.db.First(&course, id)
-	err := r.db.Model(&course).Updates(updatedCourse).Error
+	err := r.db.First(&course, id).Error
+	if err != nil {
+		return err
+	}
+	err = r.db.Model(&course).Updates(updatedCourse).Error
 	if err != nil {
 		return err
 	}

@@ -2,10 +2,12 @@ package handler
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/dto"
+	er "git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/error"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -15,7 +17,7 @@ func (h *Handler) GetCourse(ctx *gin.Context) {
 	slug := ctx.Param("slug")
 	response, err := h.courseUsecase.GetCourseBySlug(slug)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(err, er.ErrCourseNotFound) {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse("course is not found", http.StatusBadRequest))
 			return
 		}
@@ -90,6 +92,10 @@ func (h *Handler) UpdateCourse(ctx *gin.Context) {
 
 	err = h.courseUsecase.UpdateCourse(courseId, request)
 	if err != nil {
+		if errors.Is(err, er.ErrCourseNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse("course is not found", http.StatusBadRequest))
+			return
+		}
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
 		return
 	}
@@ -112,6 +118,11 @@ func (h *Handler) DeleteCourse(ctx *gin.Context) {
 
 	err = h.courseUsecase.DeleteCourse(request.Id)
 	if err != nil {
+		if errors.Is(err, er.ErrCourseNotFound) {
+			log.Print(err)
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, util.ErrorResponse("course is not found", http.StatusBadRequest))
+			return
+		}
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, util.ErrorResponse(err.Error(), http.StatusInternalServerError))
 		return
 	}

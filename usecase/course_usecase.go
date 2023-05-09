@@ -1,9 +1,13 @@
 package usecase
 
 import (
+	"errors"
+
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/dto"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/entity"
+	er "git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/error"
 	"git.garena.com/sea-labs-id/batch-06/ferza-reyaldi/stage01-project-backend/repository"
+	"gorm.io/gorm"
 )
 
 type CourseUsecase interface {
@@ -30,6 +34,9 @@ func NewCourseUsecase(c *CourseUConfig) CourseUsecase {
 func (u *courseUsecaseImpl) GetCourseBySlug(slug string) (*dto.CourseDetailResponse, error) {
 	course, err := u.courseRepository.FindBySlug(slug)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, er.ErrCourseNotFound
+		}
 		return nil, err
 	}
 
@@ -86,6 +93,9 @@ func (u *courseUsecaseImpl) UpdateCourse(id int, request *dto.UpdateCourseReques
 
 	err := u.courseRepository.Update(id, course)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return er.ErrCourseNotFound
+		}
 		return err
 	}
 
@@ -100,6 +110,9 @@ func (u *courseUsecaseImpl) DeleteCourse(id int) error {
 
 	err = u.courseRepository.Delete(course)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return er.ErrCourseNotFound
+		}
 		return err
 	}
 
