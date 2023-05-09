@@ -15,6 +15,7 @@ type RouterConfig struct {
 	FavoriteUsecase usecase.FavoriteUsecase
 	CartUsecase     usecase.CartUsecase
 	VoucherUsecase  usecase.VoucherUsecase
+	InvoiceUsecase  usecase.InvoiceUsecase
 }
 
 func NewRouter(c *RouterConfig) *gin.Engine {
@@ -28,6 +29,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		FavoriteUsecase: c.FavoriteUsecase,
 		CartUsecase:     c.CartUsecase,
 		VoucherUsecase:  c.VoucherUsecase,
+		InvoiceUsecase:  c.InvoiceUsecase,
 	})
 
 	api := router.Group("/api/v1")
@@ -37,7 +39,7 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 
 	api.GET("/categories", h.Categories)
 	api.GET("/tags", h.Tags)
-	
+
 	api.GET("courses", h.GetCourses)
 
 	secured := api.Use(middleware.AuthorizeJWT(c.UserUsecase))
@@ -53,6 +55,8 @@ func NewRouter(c *RouterConfig) *gin.Engine {
 		secured.POST("/carts/remove", h.RemoveFromCart)
 
 		secured.GET("/vouchers", h.Vouchers)
+
+		secured.POST("/transactions/checkout", h.Checkout)
 	}
 
 	adminOnly := secured.Use(middleware.AdminOnly(c.UserUsecase))
