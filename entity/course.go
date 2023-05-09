@@ -12,6 +12,7 @@ type Course struct {
 	ImgThumbnail       string
 	ImgUrl             string
 	AuthorName         string
+	Price              float64
 	CategoryId         int
 	TagId              int
 	Category           Category `gorm:"foreignKey:CategoryId;references:Id"`

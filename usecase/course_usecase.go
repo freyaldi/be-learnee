@@ -41,6 +41,7 @@ func (u *courseUsecaseImpl) GetCourseBySlug(slug string) (*dto.CourseDetailRespo
 		ImgThumbnail:       course.ImgThumbnail,
 		ImgUrl:             course.ImgUrl,
 		AuthorName:         course.AuthorName,
+		Price:              course.Price,
 	}
 
 	return response, nil
@@ -55,6 +56,7 @@ func (u *courseUsecaseImpl) CreateCourse(request *dto.CreateCourseRequest) error
 		ImgThumbnail:       request.ImgThumbnail,
 		ImgUrl:             request.ImgUrl,
 		AuthorName:         request.AuthorName,
+		Price:              request.Price,
 		CategoryId:         request.CategoryId,
 		TagId:              request.TagId,
 	}
@@ -77,6 +79,7 @@ func (u *courseUsecaseImpl) UpdateCourse(id int, request *dto.UpdateCourseReques
 		ImgThumbnail:       request.ImgThumbnail,
 		ImgUrl:             request.ImgUrl,
 		AuthorName:         request.AuthorName,
+		Price:              request.Price,
 		CategoryId:         request.CategoryId,
 		TagId:              request.TagId,
 	}
