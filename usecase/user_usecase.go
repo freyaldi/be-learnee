@@ -93,8 +93,11 @@ func (u *userUsecaseImpl) Profile(id int) (*dto.UserDetailResponse, error) {
 		Address:     user.Address,
 		PhoneNumber: user.PhoneNumber,
 		IsAdmin:     user.IsAdmin,
-		Level:       string(*user.Level),
 		Referral:    user.Referral,
+	}
+
+	if user.Level != nil {
+		response.Level = string(*user.Level)
 	}
 
 	return response, nil
