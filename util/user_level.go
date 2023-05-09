@@ -7,13 +7,13 @@ import (
 
 func UserLevelBenefit(user *entity.User) float32 {
 	var benefit float32
-	if user.Level == entity.Newbie {
+	if user.Level == &entity.Newbie {
 		benefit = constant.LevelBenefitNewbie
-	} else if user.Level == entity.Junior {
+	} else if user.Level == &entity.Junior {
 		benefit = constant.LevelBenefitJunior
-	} else if user.Level == entity.Senior {
+	} else if user.Level == &entity.Senior {
 		benefit = constant.LevelBenefitSenior
-	} else if user.Level == entity.Master {
+	} else if user.Level == &entity.Master {
 		benefit = constant.LevelBenefitMaster
 	}
 	return benefit

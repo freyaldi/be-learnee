@@ -47,8 +47,12 @@ func (u *userUsecaseImpl) Register(request *dto.UserRegisterRequest) error {
 		PhoneNumber: request.PhoneNumber,
 		RefReferral: &request.RefReferral,
 		Referral:    referral,
-		IsAdmin:     false,
-		Level:       entity.Newbie,
+		IsAdmin:     request.IsAdmin,
+	}
+
+	if !request.IsAdmin {
+		level := &entity.Newbie
+		newUser.Level = level
 	}
 
 	err = u.userRepository.Create(newUser)
@@ -89,7 +93,7 @@ func (u *userUsecaseImpl) Profile(id int) (*dto.UserDetailResponse, error) {
 		Address:     user.Address,
 		PhoneNumber: user.PhoneNumber,
 		IsAdmin:     user.IsAdmin,
-		Level:       string(user.Level),
+		Level:       string(*user.Level),
 		Referral:    user.Referral,
 	}
 

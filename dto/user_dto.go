@@ -7,6 +7,7 @@ type UserRegisterRequest struct {
 	Address     string `json:"address" validate:"required"`
 	PhoneNumber string `json:"phone_number" validate:"required,numeric,min=10,max=13"`
 	RefReferral string `json:"ref_referrral" validate:"omitempty"`
+	IsAdmin     bool   `json:"is_admin" validate:"omitempty"`
 }
 
 type UserLoginRequest struct {

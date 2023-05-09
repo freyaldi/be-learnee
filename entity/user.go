@@ -8,14 +8,14 @@ type User struct {
 	Fullname    string
 	Address     string
 	PhoneNumber string
-	Level       level
+	Level       *level
 	Referral    string
 	RefReferral *string
 }
 
 type level string
 
-const (
+var (
 	Newbie level = "newbie"
 	Junior level = "junior"
 	Senior level = "senior"
